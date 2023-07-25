@@ -1,10 +1,18 @@
 package com.mycompany.springhomework.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.mycompany.springhomework.dto.Ch04Dto;
+import com.mycompany.springhomework.dto.Ch04Form1;
+import com.mycompany.springhomework.dto.Ch04Form2;
+import com.mycompany.springhomework.validator.Ch04Form1Validator;
+import com.mycompany.springhomework.validator.Ch04Form2Validator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,14 +25,49 @@ public class Ch04Controller {
 		return "ch04/content";
 	}
 	
+	@InitBinder("ch04Form1")
+	public void Ch04FormValidator(WebDataBinder binder) {
+		binder.setValidator(new Ch04Form1Validator());
+	}
+	
 	@PostMapping("/method1")
-	public String method1(Ch04Dto dto) {
-		log.info("parama1: " + dto.getParam1());
-		log.info("parama2: " + dto.getParam2());
-		log.info("parama3: " + dto.getParam3());
-		log.info("parama4: " + dto.isParam4());
-		log.info("parama5: " + dto.getParam5());
-		return "redirect:/ch04/content";
+	public String method1(@Valid Ch04Form1 form1, Errors errors) {
+		//errors.rejectValue가 한 번이라도 호출되었다면 hasErrors는 true를 리턴
+		if(errors.hasErrors()) {
+			//폼으로 다시 돌려보냄
+			return "ch04/content";
+		}
+		
+		//요청 처리 코드
+		log.info("param1: " + form1.getParam1());
+		log.info("param2: " + form1.getParam2());
+		log.info("param3: " + form1.getParam3());
+		log.info("param4: " + form1.isParam4());
+		log.info("param5: " + form1.getParam5());
+		return "redirect:/";
+	}
+	
+	@InitBinder("ch04Form2")
+	public void Ch04Form2Validator(WebDataBinder binder) {
+		binder.setValidator(new Ch04Form2Validator());
+	}
+	
+	@PostMapping("/method2")
+	public String method2(@Valid Ch04Form2 form2, Errors errors) {
+		//errors.rejectValue가 한번이라도 호출되었다면 hasErrors는 true를 리턴
+
+		if(errors.hasErrors()) {
+			//폼으로 다시 돌려보냄
+			return "ch04/content";
+		}
+		
+		//요청 처리 코드
+		log.info("param1: " + form2.getParam1());
+		log.info("param2: " + form2.getParam2());
+		log.info("param3: " + form2.getParam3());
+		log.info("param4: " + form2.isParam4());
+		log.info("param5: " + form2.getParam5());
+		return "redirect:/";
 	}
 	
 }
